@@ -133,7 +133,7 @@ def train_model(model, batch_size, patience, n_epoches):
         epoch_len = len(str(n_epoches))                     # 将int转化为str， 再计算有几位数比如：n_epoches=100, 则有3位数
 
         print('epoch:', epoch, 'epoch_len:', epoch_len)
-
+#  ^、<、>分别是居中、左对齐、右对齐，后面带宽度。  ：为格式限定符
         print_msg = (f'[{epoch: > {epoch_len}}/ {n_epoches: > {epoch_len}}]' + f'train_loss: {train_loss:.5f}' +
                      f'valid_loss: {valid_loss:.5f}')
         print(print_msg)
@@ -277,6 +277,7 @@ for idx in np.arange(20):
     ax.imshow(np.squeeze(images[idx]), cmap='gray')    # cmap输出指定颜色
     ax.set_title('{} ({})'.format(str(preds[idx].item()), str(labels[idx].item())),
                  color=("green" if preds[idx] == labels[idx] else "red"))
+fig.savefig('Pred_Target.png', bbox_inches='tight')
 plt.show()
 
 

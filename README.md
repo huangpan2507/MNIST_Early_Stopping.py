@@ -7,7 +7,8 @@ def create_datasets(batch_size):
    
 def train_model(model, batch_size, patience, n_epoches):
    return model, avg_train_losses, avg_valid_losses
-    # avg_train_losses, avg_valid_losses为epoch个loss 的数组即 [...epoch...个的loss数] 用来描点画图
+    # avg_train_losses, avg_valid_losses为epoch个loss 的数组即 [...epoch...个的loss数] 用来描点画图， 并在图中标出early_stop的点，纵坐标是             
+    # valid_loss， 横坐标是 range(1, len(valid_loss) + 1， 所以valid_loss.index(min(valid_loss)) + 1 即为提前停止点。
 class Net(nn.Module):   # 定义全连接型的网络
    return x  
    
@@ -19,3 +20,4 @@ class EarlyStopping:  # 中有三个方法
    
    def save_checkpoint(self, val_loss, model): # 里面打印loss更新情况，保存模型参数状态
   
+3. class_correct = list(0. for i in range(10))   # list(0.0, 0.0, ....10个0.0)

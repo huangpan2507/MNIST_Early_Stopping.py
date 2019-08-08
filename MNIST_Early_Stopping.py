@@ -106,9 +106,9 @@ def train_model(model, batch_size, patience, n_epoches):
             loss.backward()
             optimizer.step()
             ii += 1
-        print('enumerate(train_loader)_i:', ii)
-        print('enumerate(train_loader)_len:', len(train_loader))  # train_loader数据每组256，分了多少组
-        train_losses.append(loss.item())
+            # print('enumerate(train_loader)_i:', ii)
+            # print('enumerate(train_loader)_len:', len(train_loader))  # train_loader数据每组256，分了多少组
+            train_losses.append(loss.item())
         print('train_losses', len(train_losses), train_losses)
 
 # validation the model
@@ -120,11 +120,12 @@ def train_model(model, batch_size, patience, n_epoches):
             j += 1
             output = model(data)
             loss = criterion(output, target)
-        print('valid_loader_j:', j)              # valid_loader_j: 47
-        valid_losses.append(loss.item())
+
+        # print('valid_loader_j:', j)              # valid_loader_j: 47
+            valid_losses.append(loss.item())
         print('valid_losses', len(valid_losses), valid_losses)
 
-    # calculate average loss over an epoch， 每个epoch中train_losses只有一个元素，average没作用
+    # calculate average loss over an epoch
         train_loss = np.average(train_losses)
         valid_loss = np.average(valid_losses)
         avg_train_losses.append(train_loss)
@@ -172,7 +173,7 @@ model, train_loss, valid_loss = train_model(model, batch_size, patience, n_epoch
 # visualize the loss as the network trained
 # plt.figure()用来画图，自定义画布大小
 fig = plt.figure(figsize=(10, 8))
-# plt.plot(x ,y 坐标， 图示， 线条颜色， 线条样式， 标记样式)
+# plt.plot(x ,y 坐标， 图示， 线条颜色， 线条样式， 标记样式) len(train_loss)也即n_epoches数
 plt.plot(range(1, len(train_loss) + 1), train_loss, label='Training Loss', color='r', linestyle='-', marker='1')
 plt.plot(range(1, len(valid_loss) + 1), valid_loss, label='Validation Loss', color='g', linestyle='--', marker='2')
 
@@ -221,6 +222,7 @@ for data, target in test_loader:
     # 比如test_loader=1000, batch_size=100, 则分成10组即循环10次， 每个的loss*循环次数（分组）*batch_size=total loss
     # print('k:', k)
 
+    # 先计算一个批次，然后累加 有多少个分组的loss，即为total_loss
     test_loss += loss.item() * data.size(0)
     _, pred = torch.max(output, 1)
 
@@ -258,21 +260,25 @@ print('\nTest Accuracy (Overall): %2d%% (%2d/%2d)' % (100. * np.sum(
 # visualize Sample Test Result
 dataiter = iter(test_loader)
 images, labels = dataiter.next()
+# images.size: [256, 1, 28, 28]
 
 # get sample outputs
 output = model(images)
 
-print('output.size:', output.size(), output)        # torch.Size([256, 10]
+# print('output.size:', output.size(), output)        # torch.Size([256, 10]
+
 
 # convert output probabilities to predicted class
 _, preds = torch.max(output, 1)
 # prep images for display，先转化为numpy类型
 images = images.numpy()
+print('images_numpy_size:', images)
 
 # plot the images in the batch, along with predicted and true labels
 fig = plt.figure(figsize=(25, 4))
 for idx in np.arange(20):
     # 几行、几列、xticks 、yticks 为x，y的坐标轴刻度
+    print('images_{}: {}'.format(idx, images[idx]))
     ax = fig.add_subplot(2, 20/2, idx + 1, xticks=[], yticks=[])
     ax.imshow(np.squeeze(images[idx]), cmap='gray')    # cmap输出指定颜色
     ax.set_title('{} ({})'.format(str(preds[idx].item()), str(labels[idx].item())),
